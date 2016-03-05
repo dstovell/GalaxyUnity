@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using SimpleJSON;
 
 namespace GS
 {
@@ -18,7 +17,7 @@ public class SystemManager : MonoBehaviour
 	//protected string BaseUrl = "http://droneserver.mod.bz";
 	protected string BaseUrl = "http://localhost:1337";
 
-	public delegate void OnRequest(string error, JSONNode json);
+	public delegate void OnRequest(string error, Hashtable json);
 
 	public void Get(string url, OnRequest cb)
 	{
@@ -34,8 +33,11 @@ public class SystemManager : MonoBehaviour
 
 		if (string.IsNullOrEmpty(webRequest.error)) 
 		{
-			JSONNode json = JSON.Parse(webRequest.text);
-			cb(null, json);
+			//JSONNode json = JSON.Parse(webRequest.text);
+			//string err = json["err"].ToString();
+			bool ok = false;
+			Hashtable ht = (Hashtable)JSON.JsonDecode(webRequest.text, ref ok);
+			cb(null, ht["result"] as Hashtable);
 		} 
 		else 
 		{
@@ -62,8 +64,12 @@ public class SystemManager : MonoBehaviour
 
 		if (string.IsNullOrEmpty(webRequest.error)) 
 		{
-			JSONNode json = JSON.Parse(webRequest.text);
-			cb(null, json);
+			//JSONNode json = JSON.Parse(webRequest.text);
+			bool ok = false;
+			Hashtable ht = (Hashtable)JSON.JsonDecode(webRequest.text, ref ok);
+			ResultParse.PrintKeys(url, ht);
+			//Debug.LogError(ht["err"].ToString());
+			cb(null, ht["result"] as Hashtable);
 		} 
 		else 
 		{
