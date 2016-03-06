@@ -17,7 +17,7 @@ public class VectorShape
 	public VectorLine line = null;
 
 	public List<Vector2> points = new List<Vector2>();
-	public float lineWidth = 5.0f;
+	public float lineWidth = 0.01f;
 	public Color color = Color.cyan;
 	public Vector2 startPosition = Vector2.zero;
 	public Vector2 position = Vector2.zero;
@@ -58,9 +58,10 @@ public class VectorShape
 	{
 		if (this.line == null)
 		{
-			this.line = new VectorLine("VectorShape", this.points, null, this.lineWidth, LineType.Continuous, Joins.Weld);
+			float lw = this.ScaleSize(this.lineWidth);
+			this.line = new VectorLine("VectorShape", this.points, null, lw, LineType.Continuous, Joins.Weld);
 			this.line.color = color;
-			this.line.capLength = lineWidth * 0.5f;
+			this.line.capLength = lw * 0.5f;
 		}
 	}
 
