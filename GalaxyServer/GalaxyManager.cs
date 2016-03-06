@@ -38,11 +38,6 @@ namespace GS
 			for(int i=0; i<links.Count; i++)
 			{
 				ArrayList link = links[i] as ArrayList;
-
-				if (this.id == 42)
-				{
-					Debug.Log("link=[" + link[0].ToString() +  "]");
-				}
 				this.Links.Add( int.Parse(link[0].ToString()) );
 			}
 
@@ -81,13 +76,13 @@ namespace GS
 				this.AddStar(entry.Value as Hashtable);
 			}
 
-			Debug.Log("Galaxy stars" + this.Stars.Count);
+			Debug.Log("Your Galaxy is made of " + this.Stars.Count + " stars");
 
-			if (this.Stars.ContainsKey(42))
+			/*if (this.Stars.ContainsKey(42))
 			{
 				StarData star42 = this.Stars[42];
 				Debug.Log("   id=" + star42.id + " Mass=" + star42.Mass + " Class=" + star42.Class + " x=" + star42.Position.x + " y=" + star42.Position.y + " z=" + star42.Position.z + " links=" + star42.Links.Count + " planets=" + star42.Planets.Count);
-			}
+			}*/
 		}
 
 		public void AddStar(Hashtable json = null)
@@ -107,7 +102,6 @@ namespace GS
 		{
 			//Put in parent
 			this.state = GS.SystemManager.State.Initial;
-			this.galaxy = new Galaxy();
 		}
 
 		public delegate void OnData(string error);
@@ -126,7 +120,7 @@ namespace GS
 
 				//Debug.Log("getGalaxy data.Keys=" + json.Keys.Count);
 				this.state = GS.SystemManager.State.Ready;
-				
+
 				this.galaxy = new Galaxy(json["galaxy"] as Hashtable);
 
 				cb(null);

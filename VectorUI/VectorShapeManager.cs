@@ -230,8 +230,7 @@ public class VectorShapeManager : MonoBehaviour
 
 	private Dictionary<string, VectorShapeLayer> Layers;
 
-	// Use this for initialization
-	void Start () 
+	void Awake() 
 	{
 		Instance = this;
 
@@ -239,6 +238,11 @@ public class VectorShapeManager : MonoBehaviour
 		Layers["info"] = new VectorShapeLayer("info", Color.cyan);
 		Layers["ally"] = new VectorShapeLayer("ally", Color.green);
 		Layers["enemy"] = new VectorShapeLayer("enemy", Color.red);
+	}
+
+	// Use this for initialization
+	void Start() 
+	{
 	}
 
 	public void AddShape(string layer, VectorShape shape)

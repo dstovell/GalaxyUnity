@@ -23,7 +23,7 @@ public class VectorItem
 
 	public VectorItem(string _text, Type _type, VectorItem _parent, Vector2 _position, float _size, float delayTime = 0.0f)
 	{
-		this.text = text;
+		this.text = _text;
 		this.type = _type;
 		this.parent = _parent;
 		this.position = _position;
@@ -64,10 +64,18 @@ public class VectorItem
 	{
 		if (this.shape.state == VectorShape.State.Ready)
 		{
-			if (this.children.Count < 3)
+			for (int i=0; i<this.children.Count; i++)
 			{
-				float delay = this.children.Count * 0.1f;
-				AddChild(this.text + " - " + (this.children.Count+1), delay);
+				this.children[i].Update();
+			}
+
+			if (this.parent == null)
+			{
+				if (this.children.Count < 3)
+				{
+					float delay = this.children.Count * 0.1f;
+					AddChild("OPT " + (this.children.Count+1), delay);
+				}
 			}
 		}
 	}
@@ -76,17 +84,20 @@ public class VectorItem
 public class VectorMenu : MonoBehaviour 
 {
 	public VectorItem rootMenu = null;
+	public VectorItem connectingMenu = null;
 
 	void Start() 
 	{
-		float size = 0.17f;
-		Vector2 screenPoint = new Vector2(0.12f, 0.9f);
+		//float connectingSize = 0.3f;
+		//Vector2 screenPoint = new Vector2(0.5f, 0.5f);
+		//this.connectingMenu = new VectorItem("CONNECT", VectorItem.Type.Hex, null, screenPoint, connectingSize);
 
-		this.rootMenu = new VectorItem("Bonk", VectorItem.Type.Circle, null, screenPoint, size);
+		//this.rootMenu = new VectorItem("MENU", VectorItem.Type.Hex, null, screenPoint, size);
 	}
 	
 	void Update() 
 	{
-		this.rootMenu.Update();
+		//this.rootMenu.Update();
+		//this.connectingMenu.Update();
 	}
 }

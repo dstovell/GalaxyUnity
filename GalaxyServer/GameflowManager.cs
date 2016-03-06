@@ -18,12 +18,9 @@ public class GameflowManager : MonoBehaviour
 	// Use this for initialization
 	void Start() 
 	{
-		Debug.Log("LoginManager.LoginUser start");
 		loginManager.LoginUser(delegate(string error, User user) {
-			Debug.Log("LoginManager.LoginUser done error=" + error);
 
 			galaxyManager.GetGalaxy(delegate(string error2) {
-				Debug.Log("LoginManager.GetGalaxy done");
 				
 			});
 		});

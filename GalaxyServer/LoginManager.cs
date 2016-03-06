@@ -13,7 +13,7 @@ public class User
 		this.username = ResultParse.String("username", json, string.Empty);
 		this.email = ResultParse.String("email", json, string.Empty);
 
-		ResultParse.PrintKeys("user", json);
+		//ResultParse.PrintKeys("user", json);
 	}
 
 	public string deviceId;
