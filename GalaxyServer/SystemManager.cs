@@ -15,6 +15,8 @@ public class SystemManager : MonoBehaviour
 	}
 	protected State state;
 
+	public bool IsConnected() { return (this.state == State.Ready); }
+
 	//protected string BaseUrl = "http://droneserver.mod.bz";
 	protected string BaseUrl = "http://localhost:1337";
 

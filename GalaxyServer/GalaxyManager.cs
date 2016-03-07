@@ -119,9 +119,9 @@ namespace GS
 				//ResultParse.PrintKeys("getGalaxy", json);
 
 				//Debug.Log("getGalaxy data.Keys=" + json.Keys.Count);
-				this.state = GS.SystemManager.State.Ready;
 
 				this.galaxy = new Galaxy(json["galaxy"] as Hashtable);
+				this.state = GS.SystemManager.State.Ready;
 
 				cb(null);
 				return;

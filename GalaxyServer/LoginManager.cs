@@ -46,8 +46,9 @@ public class LoginManager : SystemManager
 				return cb(error, null);
 			}
 
-			this.state = GS.SystemManager.State.Ready;
 			this.LocalUser = new User(json);
+			this.state = GS.SystemManager.State.Ready;
+
 			return cb(error, this.LocalUser);
 		});
 	}

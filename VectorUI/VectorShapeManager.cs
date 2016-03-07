@@ -115,28 +115,28 @@ public class VectorShape
 		}
 	}
 
-	public float ScaleX(float t)
+	public static float ScaleX(float t)
 	{
 		return Mathf.Floor(t*Screen.width);
 	}
 
-	public float ScaleY(float t)
+	public static float ScaleY(float t)
 	{
 		return Mathf.Floor(t*Screen.height);
 	}
 
-	public Vector2 ScaleVector(Vector2 t)
+	public static Vector2 ScaleVector(Vector2 t)
 	{
-		return new Vector2(this.ScaleX(t.x), this.ScaleY(t.y));
+		return new Vector2(ScaleX(t.x), ScaleY(t.y));
 	}
 
-	public float ScaleSize(float t)
+	public static float ScaleSize(float t)
 	{
 		int minDim = Mathf.Min(Screen.height, Screen.width);
 		return Mathf.FloorToInt(t*minDim);
 	}
 
-	public Vector2 LerpVector(Vector2 v0, Vector2 v1, float t)
+	public static Vector2 LerpVector(Vector2 v0, Vector2 v1, float t)
 	{
 		return new Vector2( Mathf.Lerp(v0.x, v1.x, t),  Mathf.Lerp(v0.y, v1.y, t) );
 	}
@@ -145,6 +145,7 @@ public class VectorShape
 public class PolygonVectorShape : VectorShape
 {
 	public float radius = 0.0f;
+	public float startingAngle = Mathf.PI/2.0f;
 
 	public PolygonVectorShape(Color _color, Vector2 _position, int _numSegments, float _radius, Vector2 _startPosition, float _animationTime = 0.0f, float _delayTime = 0.0f)
 		: base(_color, _position, _numSegments, _startPosition, _animationTime, _delayTime)
@@ -162,11 +163,28 @@ public class PolygonVectorShape : VectorShape
 		float thetaStep = 2*Mathf.PI / this.numSegments;
 		for (int i=0; i<this.points.Count; i++)
 		{
-			float theta = i*thetaStep + Mathf.PI/2;
+			float theta = i*thetaStep + this.startingAngle;
 			float x = scaledPos.x + scaledRadius * (float)System.Math.Cos(theta);
 			float y = scaledPos.y + scaledRadius * (float)System.Math.Sin(theta);
 			this.points[i] = new Vector2(x, y);
 		}
+	}
+}
+
+public class DiamondVectorShape : PolygonVectorShape
+{
+	public DiamondVectorShape(Color _color, Vector2 _position, float _radius, Vector2 _startPosition, float _animationTime = 0.0f, float _delayTime = 0.0f)
+		: base(_color, _position, 4, _radius, _startPosition, _animationTime, _delayTime)
+	{
+	}
+}
+
+public class SquareVectorShape : PolygonVectorShape
+{
+	public SquareVectorShape(Color _color, Vector2 _position, float _radius, Vector2 _startPosition, float _animationTime = 0.0f, float _delayTime = 0.0f)
+		: base(_color, _position, 4, _radius, _startPosition, _animationTime, _delayTime)
+	{
+		this.startingAngle = Mathf.PI/4.0f;
 	}
 }
 

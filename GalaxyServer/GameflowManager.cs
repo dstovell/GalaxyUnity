@@ -6,11 +6,17 @@ namespace GS
 
 public class GameflowManager : MonoBehaviour 
 {
+	public static GameflowManager Instance = null;
+
 	public LoginManager loginManager = null;
 	public GalaxyManager galaxyManager = null;
 
 	void Awake()
 	{
+		if (Instance == null)
+		{
+			Instance = this;
+		}
 		loginManager = this.gameObject.AddComponent<LoginManager>();
 		galaxyManager = this.gameObject.AddComponent<GalaxyManager>();
 	}
