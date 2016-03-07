@@ -63,6 +63,24 @@ namespace GS
 		public float FrostPoint	{ get { return GS.Math.getStarFrostPoint(this.Mass); } }
 		public Range HabitableZone { get { return GS.Math.getStarHabitableZone(this.Mass); } }
 		public Range PlanetZone { get { return GS.Math.getStarPlanetZone(this.Mass); } }
+
+		public Color StarColor
+		{
+			get
+			{
+				switch(Class)
+				{
+				case "o": return Math.HexToRGB("9BB0FF");
+				case "b": return Math.HexToRGB("AABFFF");
+				case "a": return Math.HexToRGB("CAD7FF");
+				case "f": return Math.HexToRGB("F8F7FF");
+				case "g": return Math.HexToRGB("FFF4EA");
+				case "k": return Math.HexToRGB("FFD2A1");
+				case "m": return Math.HexToRGB("FFCC6F");
+				default: return Color.white;
+				}
+			}
+		}
 	}
 
 	public class Galaxy
