@@ -127,9 +127,9 @@ public static class ResultParse
 			return defaultValue;
 		}
 
-		float x = ResultParse.Int("x", json, 0);
-		float y = ResultParse.Int("y", json, 0);
-		float z = ResultParse.Int("z", json, 0);
+		float x = ResultParse.Float("x", json, 0);
+		float y = ResultParse.Float("y", json, 0);
+		float z = ResultParse.Float("z", json, 0);
 		return new Vector3(x, y, z);
 	}
 

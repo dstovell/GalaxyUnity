@@ -27,7 +27,7 @@ public class GalaxyLoader : MonoBehaviour {
 				foreach(KeyValuePair<int, StarData> entry in galaxy.Stars)
 				{
 					SgtStarfieldStar star = new SgtStarfieldStar();
-					star.Position = new Vector3( 0.18f*entry.Value.Position.x, 0.18f*entry.Value.Position.y);
+					star.Position = new Vector3( 0.18f*entry.Value.Position.x, 0.18f*entry.Value.Position.y, 0.18f*entry.Value.Position.z);
 					star.Color = entry.Value.StarColor;
 					star.Radius = 0.15f * entry.Value.Radius;
 					customStarfield.Stars.Add(star);
