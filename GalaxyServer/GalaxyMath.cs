@@ -26,6 +26,11 @@ public static class Math
 		//return Math.floor(exports.interpolateFloat(min, max, t));
 	}
 
+	public static Vector3 interpolateVector(Vector3 v0, Vector3 v1, float t)
+	{
+		return new Vector3( Mathf.Lerp(v0.x, v1.x, t),  Mathf.Lerp(v0.y, v1.y, t),  Mathf.Lerp(v0.z, v1.z, t) );
+	}
+
 	/*exports.bvToRgb = function(bv) {    // RGB <0,1> <- BV <-0.4,+2.0> [-]
 		var r;
 		var g;

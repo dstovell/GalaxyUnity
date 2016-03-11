@@ -7,6 +7,8 @@ namespace GS
 
 public class GalaxyLoader : MonoBehaviour {
 
+	public Sprite starSprite = null;
+
 	private bool loaded = false;
 
 	// Use this for initialization
@@ -27,15 +29,24 @@ public class GalaxyLoader : MonoBehaviour {
 				foreach(KeyValuePair<int, StarData> entry in galaxy.Stars)
 				{
 					SgtStarfieldStar star = new SgtStarfieldStar();
-					star.Position = new Vector3( 0.12f*entry.Value.Position.x, 0.12f*entry.Value.Position.y, 0.12f*entry.Value.Position.z);
+					star.Position = new Vector3( entry.Value.Position.x, entry.Value.Position.y, entry.Value.Position.z);
 					star.Color = entry.Value.StarColor;
-					star.Radius = 0.15f * entry.Value.Radius;
+					star.Radius = entry.Value.Radius;
+					if (this.starSprite != null)
+					{
+						star.Sprite = this.starSprite;
+					}
 					customStarfield.Stars.Add(star);
+
+					StarComponent.Create(this.transform, entry.Value, star);
 				}
+
+				Camera.main.depthTextureMode = DepthTextureMode.Depth;
 
 				customStarfield.Regenerate();
 
 				loaded = true;
+				GS.Messenger.SendMessage("galaxy_loaded");
 			}
 		}
 	}

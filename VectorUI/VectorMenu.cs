@@ -104,7 +104,9 @@ public class VectorItem
 			Rect buttonRect = new Rect(x, y, sizeX, sizeY);
 			if (GUI.Button(buttonRect, "<color=cyan>" + this.text + "</color>", style))
 			{
-				AddChild("s="+style.fontSize, 0.0f);
+				//AddChild("s="+style.fontSize, 0.0f);
+				GS.StarData star = GS.GameflowManager.Instance.galaxyManager.galaxy.Stars[2015];
+				GS.Messenger.SendMessageFrom("ui", "star_selected", star);
 			}
 
 			for (int i=0; i<this.children.Count; i++)
@@ -125,7 +127,7 @@ public class VectorMenu : MonoBehaviour
 		Vector2 screenPoint = new Vector2(0.061f, 0.88f);
 
 		float size = 0.25f;
-		this.rootMenu = new VectorItem("MENU STYLE", VectorItem.Type.Square, null, screenPoint, size);
+		this.rootMenu = new VectorItem("STAR 2015", VectorItem.Type.Square, null, screenPoint, size);
 	}
 	
 	void Update() 

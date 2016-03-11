@@ -27,13 +27,12 @@ public class LoginManager : SystemManager
 {
 	public User LocalUser = null;
 
-	void Awake()
-	{
-		//Put in parent
-		this.state = GS.SystemManager.State.Initial;
-	}
-
 	public delegate void OnUserData(string error, User user);
+
+	public override void Init()
+	{
+		this.InitMessenger("login");
+	}
 
 	public void LoginUser(OnUserData cb) 
 	{
@@ -48,6 +47,8 @@ public class LoginManager : SystemManager
 
 			this.LocalUser = new User(json);
 			this.state = GS.SystemManager.State.Ready;
+
+			GS.Messenger.SendMessageFrom("login", "userLogin", this.LocalUser);
 
 			return cb(error, this.LocalUser);
 		});
@@ -66,6 +67,16 @@ public class LoginManager : SystemManager
 	public string GetLocalUserName()
 	{
 		return (this.LocalUser != null) ? this.LocalUser.username : string.Empty;
+	}
+
+	public override bool OnMessage(string id, object obj1, object obj2)
+	{
+		switch(id)
+		{
+			default:break;
+		}
+
+		return false;
 	}
 }
 

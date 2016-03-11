@@ -83,6 +83,65 @@ namespace GS
 		}
 	}
 
+	public class SectorData
+	{
+		public SectorData(int _x, int _y, Vector3 _center, Vector3 _size)
+		{
+			this.x = _x;
+			this.x = _y;
+			this.center = _center;
+			this.size = _size;
+		}
+
+		public int x;
+		public int y;
+		public Vector3 center;
+		public Vector3 size;
+	}
+
+	public class AABB
+	{
+		public AABB(Hashtable json)
+		{
+			Hashtable x = ResultParse.Object("x", json, ResultParse.EmptyObject);
+			Hashtable y = ResultParse.Object("y", json, ResultParse.EmptyObject);
+			Hashtable z = ResultParse.Object("z", json, ResultParse.EmptyObject);
+			this.minPoint = new Vector3(ResultParse.Float("min", x, 0.0f), ResultParse.Float("min", y, 0.0f), ResultParse.Float("min", z, 0.0f));
+			this.maxPoint = new Vector3(ResultParse.Float("max", x, 0.0f), ResultParse.Float("max", y, 0.0f), ResultParse.Float("max", z, 0.0f));
+			this.sectorDimensionX = ResultParse.Int("secDim", x, 1);
+			this.sectorDimensionY = ResultParse.Int("secDim", y, 1);
+			this.sectorDimensionZ = ResultParse.Int("secDim", z, 1);
+		}
+
+		public List<SectorData> CreateSectors()
+		{
+			float totalSizeX = this.maxPoint.x - this.minPoint.x;
+			float totalSizeY = this.maxPoint.y - this.minPoint.y;
+			//float totalSizeZ = this.maxPoint.z - this.minPoint.z;
+
+			float sectorSizeX = totalSizeX / (float)this.sectorDimensionX;
+			float sectorSizeY = totalSizeY / (float)this.sectorDimensionY;
+
+			List<SectorData> sectorList = new List<SectorData>();
+			for (int i=0;i<sectorDimensionX;i++)
+			{
+				for (int j=0;j<sectorDimensionY;j++)
+				{
+					float x = (float)i*sectorSizeX + this.minPoint.x + (sectorSizeX/2.0f);
+					float y = (float)j*sectorSizeX + this.minPoint.y + (sectorSizeY/2.0f);
+					sectorList.Add( new SectorData(i, j, new Vector3(x, y, 0.0f), new Vector3(sectorSizeX, sectorSizeY, sectorSizeX)) );
+				}
+			}
+			return sectorList;
+		}
+
+		public Vector3 minPoint;
+		public Vector3 maxPoint;
+		public int sectorDimensionX;
+		public int sectorDimensionY;
+		public int sectorDimensionZ;
+	}
+
 	public class Galaxy
 	{
 		public Galaxy(Hashtable json = null)
@@ -94,7 +153,11 @@ namespace GS
 				this.AddStar(entry.Value as Hashtable);
 			}
 
-			Debug.Log("Your Galaxy is made of " + this.Stars.Count + " stars");
+			Hashtable aabb = ResultParse.Object("aabb", json, ResultParse.EmptyObject);
+			this.aabb = new AABB(aabb);
+			this.sectors = this.aabb.CreateSectors();
+
+			Debug.Log("Your Galaxy is made of " + this.Stars.Count + " stars in " + this.sectors.Count + " sectors");
 
 			/*if (this.Stars.ContainsKey(42))
 			{
@@ -110,17 +173,13 @@ namespace GS
 		}
 
 		public Dictionary<int, StarData> Stars;
+		public AABB aabb;
+		public List<SectorData> sectors;
 	}
 
 	public class GalaxyManager : SystemManager
 	{
 		public Galaxy galaxy = null;
-
-		void Awake()
-		{
-			//Put in parent
-			this.state = GS.SystemManager.State.Initial;
-		}
 
 		public delegate void OnData(string error);
 
@@ -158,6 +217,21 @@ namespace GS
 
 				return cb(null);
 			});
+		}
+
+		public override void Init()
+		{
+			this.InitMessenger("galaxy");
+		}
+
+		public override bool OnMessage(string id, object obj1, object obj2)
+		{
+			switch(id)
+			{
+				default:break;
+			}
+
+			return false;
 		}
 	}
 
