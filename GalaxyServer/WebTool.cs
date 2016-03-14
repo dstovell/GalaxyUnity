@@ -22,6 +22,11 @@ public static class WebTool
 {
 	public static Dictionary<string, WebRequest> requests = new Dictionary<string, WebRequest>();
 
+	public static bool IsRequestActive()
+	{
+		return (requests.Count != 0);
+	}
+
 	public static void Get(string url, WebRequest.OnResponse cb)
 	{
 		Debug.Log("HTTP Get url:" + url);
@@ -67,7 +72,7 @@ public static class WebTool
 			System.TimeSpan elapsedSpan = new System.TimeSpan(elapsedTicks);
 			Debug.Log("HTTP Success url:" + wr.req.url + " took " + Mathf.FloorToInt((float)elapsedSpan.TotalMilliseconds) + "ms");
 
-			wr.cb(null, ht["result"] as Hashtable);
+			wr.cb(null, (ht != null) ? ht["result"] as Hashtable : null);
 
 			requests.Remove(transactionId);
 		}

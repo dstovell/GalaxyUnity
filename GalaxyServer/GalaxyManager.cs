@@ -169,7 +169,7 @@ namespace GS
 		public void AddStar(Hashtable json = null)
 		{
 			StarData star = new StarData(json);
-			this.Stars.Add(star.id, star);
+			this.Stars[star.id] = star;
 		}
 
 		public Dictionary<int, StarData> Stars;
@@ -207,7 +207,7 @@ namespace GS
 
 		public void GetStar(int starId, OnData cb) 
 		{
-			this.Get("/api/galaxy/getStar"+starId, delegate(string error, Hashtable json) {
+			this.Get("/api/galaxy/getStar/"+starId, delegate(string error, Hashtable json) {
 				if (!string.IsNullOrEmpty(error)) 
 				{
 					return cb(error);

@@ -27,7 +27,7 @@ public class GameflowManager : MonoBehaviour
 		loginManager.LoginUser(delegate(string error, User user) {
 
 			galaxyManager.GetGalaxy(delegate(string error2) {
-				
+				Messenger.SendMessageFrom("GameflowManager", "fade_in");	
 			});
 		});
 	}

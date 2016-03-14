@@ -31,7 +31,7 @@ public class GalaxyLoader : MonoBehaviour {
 					SgtStarfieldStar star = new SgtStarfieldStar();
 					star.Position = new Vector3( entry.Value.Position.x, entry.Value.Position.y, entry.Value.Position.z);
 					star.Color = entry.Value.StarColor;
-					star.Radius = entry.Value.Radius;
+					star.Radius = 0.75f*entry.Value.Radius;
 					if (this.starSprite != null)
 					{
 						star.Sprite = this.starSprite;

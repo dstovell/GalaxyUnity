@@ -8,6 +8,17 @@ public class Range
 {
 	public float min;
 	public float max;
+
+	public bool IsInRange(float val)
+	{
+		return ((val >= this.min) || (val <= this.max));
+	}
+
+	public Range(float _min, float _max)
+	{
+		this.min = _min;
+		this.max = _max;
+	}
 }
 
 public static class Math 
@@ -91,7 +102,7 @@ public static class Math
 	public static Range getStarHabitableZone(float M) 
 	{
 		float L = getStarLuminosity(M);
-		Range zone = new Range();
+		Range zone = new Range(0f,0f);
 		zone.min = Mathf.Sqrt( L / 1.1f );
 		zone.max = Mathf.Sqrt( L / 0.53f );
 		return zone;
@@ -99,7 +110,7 @@ public static class Math
 
 	public static Range getStarPlanetZone(float M) 
 	{
-		Range zone = new Range();
+		Range zone = new Range(0f,0f);
 		zone.min = 0.1f * M;
 		zone.max = 40.0f * M;
 		return zone;

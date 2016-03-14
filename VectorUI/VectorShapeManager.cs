@@ -58,7 +58,7 @@ public class VectorShape
 	{
 		if (this.line == null)
 		{
-			float lw = this.ScaleSize(this.lineWidth);
+			float lw = ScaleSize(this.lineWidth);
 			this.line = new VectorLine("VectorShape", this.points, null, lw, LineType.Continuous, Joins.Weld);
 			this.line.color = color;
 			this.line.capLength = lw * 0.5f;
@@ -103,6 +103,7 @@ public class VectorShape
 		if (this.line != null)
 		{
 			//Destroy line here I think...
+			VectorLine.Destroy(ref this.line);
 			this.line = null;
 		}
 	}
@@ -157,8 +158,8 @@ public class PolygonVectorShape : VectorShape
 
 	protected override void UpdatePoints(float t)
 	{
-		Vector2 scaledPos = this.ScaleVector( this.LerpVector(this.startPosition, this.position, t) );
-		float scaledRadius = this.ScaleSize( Mathf.Lerp(0.0001f, this.radius, t*t*t) );
+		Vector2 scaledPos = ScaleVector( this.LerpVector(this.startPosition, this.position, t) );
+		float scaledRadius = ScaleSize( Mathf.Lerp(0.0001f, this.radius, t*t*t) );
 
 		float thetaStep = 2*Mathf.PI / this.numSegments;
 		for (int i=0; i<this.points.Count; i++)
