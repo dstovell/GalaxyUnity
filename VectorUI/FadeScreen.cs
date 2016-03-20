@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FadeScreen : GS.MessengerListener 
 {
-	private float fadeDuration = 7.0f;
+	private float fadeDuration = 3.0f;
 	private UnityEngine.UI.Image image;
 	private float fontSize = 0.05f;
 	private string text = string.Empty;

@@ -246,7 +246,7 @@ public class RandomStarVectorItem : VectorItem
 	private GS.GalaxyManager galaxyManager;
 
 	public RandomStarVectorItem(VectorItem _parent, Vector2 _position, float _size) 
-	: base("RANDOM STAR", VectorItem.Type.Square, _parent, _position, _size)
+	: base("", VectorItem.Type.Square, _parent, _position, _size)
 	{
 		this.galaxyManager = GS.GameflowManager.Instance.galaxyManager;
 		NewRandomStar();
@@ -284,31 +284,16 @@ public class RandomStarVectorItem : VectorItem
 		float x = shape.points[2].x + boarderSize;
 		float y = ((Screen.height - shape.points[2].y)+boarderSize-sizeY- 2.0f*boarderSize);
 		Rect buttonRect = new Rect(x, y, sizeX, sizeY);
-		if (this.text == this.originalText)
-		{
-			if (GUI.Button(buttonRect, "<color=cyan>" + this.text + "</color>", style))
-			{
-				//GS.StarData star = GS.GameflowManager.Instance.galaxyManager.galaxy.Stars[2015];
 
-				if (this.galaxyManager.galaxy.Stars.ContainsKey(this.randomStarId))
-				{
-					GS.StarData star = this.galaxyManager.galaxy.Stars[this.randomStarId];
-					GS.Messenger.SendMessageFrom("ui", "starview_selected", star);
-
-					RootVectorItem root = this.parent as RootVectorItem;
-					if (root != null)
-					{
-						root.Close();
-					}
-				}
-			}
-		}
-		else
+		if (GUI.Button(buttonRect, "<color=cyan>" + this.text + "</color>", style))
 		{
-			if (GUI.Button(buttonRect, "<color=cyan>" + this.text + "</color>", style))
+			//GS.StarData star = GS.GameflowManager.Instance.galaxyManager.galaxy.Stars[2015];
+
+			if (this.galaxyManager.galaxy.Stars.ContainsKey(this.randomStarId))
 			{
-				GS.Messenger.SendMessageFrom("ui", "galaxyview_selected");
-				NewRandomStar();
+				GS.StarData star = this.galaxyManager.galaxy.Stars[this.randomStarId];
+				GS.Messenger.SendMessageFrom("ui", "starview_selected", star);
+
 				RootVectorItem root = this.parent as RootVectorItem;
 				if (root != null)
 				{

@@ -20,7 +20,7 @@ public class GalaxyComponent : MessengerListener
 	private float targetZoom = -1.0f;
 	private float previousZoom = 0.5f;
 	private float moveTime = 0.0f;
-	private float moveDuration = 5.0f;
+	private float moveDuration = 3.0f;
 	private float fullZoom = 0.0f;
 	private Vector3 fullZoomPosition;
 	private float fullZoomCameraVertical = 0.0f;
