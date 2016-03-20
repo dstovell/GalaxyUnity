@@ -22,6 +22,7 @@ public class StarViewGameflowState : GameflowState
 			this.manager.galaxyManager.GetStar(this.starData.id, delegate(string error) {
 				//Debug.Log("GetStar() error=" + error);
 			});
+			this.manager.SendMessengerMsg("starview_onbegin", this.starData);
 		}
 	}
 
@@ -44,6 +45,12 @@ public class StarViewGameflowState : GameflowState
 			case "galaxyview_selected":
 			{
 				this.manager.SetState(GameflowStateType.GalaxyView, obj1);
+				break;
+			}
+			
+			case "starview_selected":
+			{
+				this.OnBegin(GameflowStateType.StarView, obj1, null);
 				break;
 			}
 		}

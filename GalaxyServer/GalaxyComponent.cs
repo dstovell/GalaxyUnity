@@ -101,7 +101,7 @@ public class GalaxyComponent : MessengerListener
 
 		switch(id)
 		{
-			case "starview_selected":
+			case "starview_onbegin":
 			{
 				StarData data = obj1 as StarData;
 				this.targetStar = data;
@@ -109,7 +109,7 @@ public class GalaxyComponent : MessengerListener
 				break;
 			}
 
-			case "galaxyview_selected":
+			case "galaxyview_onbegin":
 			{
 				RestoreInital();
 				break;

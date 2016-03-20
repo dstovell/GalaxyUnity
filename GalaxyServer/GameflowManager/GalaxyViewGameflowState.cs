@@ -13,8 +13,7 @@ public class GalaxyViewGameflowState : GameflowState
 
 	public override void OnBegin(GameflowStateType previousState, object obj1, object obj2)
 	{
-		//this.manager.SendMessengerMsg("galaxy_loaded");
-		this.manager.SendMessengerMsg("fade_in");
+		this.manager.SendMessengerMsg("galaxyview_onbegin");
 	}
 
 	public override void OnEnd(GameflowStateType nextState, object obj1, object obj2)
@@ -35,7 +34,7 @@ public class GalaxyViewGameflowState : GameflowState
 		{
 			case "starview_selected":
 			{
-				this.manager.SetState(GameflowStateType.StarView);
+				this.manager.SetState(GameflowStateType.StarView, obj1);
 				break;
 			}
 		}

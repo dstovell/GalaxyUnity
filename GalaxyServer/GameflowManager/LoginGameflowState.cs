@@ -22,6 +22,8 @@ public class LoginGameflowState : GameflowState
 
 	public override void OnEnd(GameflowStateType nextState, object obj1, object obj2)
 	{
+		//this.manager.SendMessengerMsg("galaxy_loaded");
+		this.manager.SendMessengerMsg("fade_in");
 	}
 
 	public override void OnUpdate()
