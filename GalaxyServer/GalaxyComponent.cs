@@ -75,7 +75,8 @@ public class GalaxyComponent : MessengerListener
 		}
 		if ((this.targetZoom > 0.0) && (this.galaxyZoomer != null))
 		{
-			float zoom = Mathf.Lerp(this.previousZoom, this.targetZoom, t*t*t);
+			float tValue = (this.targetZoom > this.previousZoom) ? Mathf.Pow(t, 3.0f) : (1.0f -  Mathf.Pow((1.0f-t), 3));
+			float zoom = Mathf.Lerp(this.previousZoom, this.targetZoom, tValue);
 			galaxyZoomer.transform.localScale = new Vector3(zoom, zoom, zoom);
 
 			float rotationAngle = Mathf.Lerp(this.fullZoomCameraVertical, this.fullZoomCameraVertical-40.0f, (this.maxZoom - zoom)/(this.maxZoom/this.fullZoom));

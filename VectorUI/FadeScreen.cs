@@ -7,7 +7,7 @@ public class FadeScreen : GS.MessengerListener
 	//private float fadeTime = 0.0f;
 	private float fadeDuration = 7.0f;
 	private UnityEngine.UI.Image image;
-	float fontSize = 0.2f;
+	float fontSize = 0.05f;
 	bool intialFade = false;
 
 	// Use this for initialization
@@ -23,7 +23,7 @@ public class FadeScreen : GS.MessengerListener
 	{
 		if (intialFade)
 		{
-			fontSize -= 0.001f;
+			fontSize = 0.0f;
 		}
 		fontSize = Mathf.Max(fontSize, 0.0f);
 		if (fontSize == 0.0f)
@@ -41,15 +41,15 @@ public class FadeScreen : GS.MessengerListener
 		float boarderSize = 6.0f;
 		float sizeX =  0.6f*Screen.width;
 		float sizeY =  0.6f*Screen.height;
-		float x = 0.13f*Screen.width;
-		float y = 0.13f*Screen.height;
+		float x = 0.12f*Screen.width;
+		float y = 0.09f*Screen.height;
 		Rect buttonRect = new Rect(x, y, sizeX, sizeY);
 
 		string colorHex = "#00ffffff";
 
 		GUILayout.BeginArea(buttonRect);
 		//GUILayout.Label("<color=cyan>" + this.text + "</color>", style);
-		GUILayout.Box("<color=" + colorHex + ">the galaxy</color>", style);
+		GUILayout.Box("<color=" + colorHex + ">connecting to the galaxy...</color>", style);
 		GUILayout.EndArea();
 		//GUI.Label(buttonRect, "<color=cyan>" + this.text + "</color>", style);
 	}
