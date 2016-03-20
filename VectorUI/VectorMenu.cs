@@ -296,6 +296,8 @@ public class RandomStarVectorItem : VectorItem
 					GS.Messenger.SendMessageFrom("ui", "starview_selected", star);
 					this.text = "GALAXY VIEW";
 
+					GS.GameflowManager.Instance.SetState(GS.GameflowStateType.StarView);
+
 					this.galaxyManager.GetStar(star.id, delegate(string error) {
 						//Debug.Log("GetStar() error=" + error);
 					});
@@ -352,6 +354,7 @@ public class GalaxyViewVectorItem : VectorItem
 			{
 				root.Close();
 			}
+			GS.GameflowManager.Instance.SetState(GS.GameflowStateType.GalaxyView);
 		}
 	}
 }

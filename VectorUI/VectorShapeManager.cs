@@ -158,7 +158,7 @@ public class PolygonVectorShape : VectorShape
 
 	protected override void UpdatePoints(float t)
 	{
-		Vector2 scaledPos = ScaleVector( this.LerpVector(this.startPosition, this.position, t) );
+		Vector2 scaledPos = ScaleVector( LerpVector(this.startPosition, this.position, t) );
 		float scaledRadius = ScaleSize( Mathf.Lerp(0.0001f, this.radius, t*t*t) );
 
 		float thetaStep = 2*Mathf.PI / this.numSegments;

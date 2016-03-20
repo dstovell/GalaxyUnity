@@ -42,7 +42,7 @@ public class LoginManager : SystemManager
 		this.Post("/api/users/loginuser", data, delegate(string error, Hashtable json) {
 			if (!string.IsNullOrEmpty(error)) 
 			{
-				return cb(error, null);
+				cb(error, null);
 			}
 
 			this.LocalUser = new User(json);
@@ -50,7 +50,7 @@ public class LoginManager : SystemManager
 
 			GS.Messenger.SendMessageFrom("login", "userLogin", this.LocalUser);
 
-			return cb(error, this.LocalUser);
+			cb(error, this.LocalUser);
 		});
 	}
 

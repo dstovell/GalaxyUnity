@@ -210,12 +210,12 @@ namespace GS
 			this.Get("/api/galaxy/getStar/"+starId, delegate(string error, Hashtable json) {
 				if (!string.IsNullOrEmpty(error)) 
 				{
-					return cb(error);
+					cb(error);
 				}
 
 				this.galaxy.AddStar(json);
 
-				return cb(null);
+				cb(null);
 			});
 		}
 
