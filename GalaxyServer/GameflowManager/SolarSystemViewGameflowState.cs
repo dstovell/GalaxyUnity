@@ -11,11 +11,11 @@ public class SolarSystemViewGameflowState : GameflowState
 	{
 	}
 
-	public override void OnBegin()
+	public override void OnBegin(GameflowStateType previousState, object obj1, object obj2)
 	{
 	}
 
-	public override void OnEnd()
+	public override void OnEnd(GameflowStateType nextState, object obj1, object obj2)
 	{
 	}
 
@@ -27,9 +27,8 @@ public class SolarSystemViewGameflowState : GameflowState
 	{
 	}
 
-	public override bool OnMessage(string id, object obj1, object obj2)
+	public override void OnMessage(string id, object obj1, object obj2)
 	{
-		return false;
 	}
 }
 

@@ -48,7 +48,7 @@ public class LoginManager : SystemManager
 			this.LocalUser = new User(json);
 			this.state = GS.SystemManager.State.Ready;
 
-			GS.Messenger.SendMessageFrom("login", "userLogin", this.LocalUser);
+			SendMessengerMsg("userLogin", this.LocalUser);
 
 			cb(error, this.LocalUser);
 		});
@@ -69,14 +69,12 @@ public class LoginManager : SystemManager
 		return (this.LocalUser != null) ? this.LocalUser.username : string.Empty;
 	}
 
-	public override bool OnMessage(string id, object obj1, object obj2)
+	public override void OnMessage(string id, object obj1, object obj2)
 	{
 		switch(id)
 		{
 			default:break;
 		}
-
-		return false;
 	}
 }
 

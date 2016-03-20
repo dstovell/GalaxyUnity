@@ -46,7 +46,6 @@ public class GalaxyLoader : MonoBehaviour {
 				customStarfield.Regenerate();
 
 				loaded = true;
-				GS.Messenger.SendMessage("galaxy_loaded");
 			}
 		}
 	}

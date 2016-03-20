@@ -16,9 +16,13 @@ public class MessengerListener : MonoBehaviour
 		Messenger.AddListener(this);
 	}
 
-	public virtual bool OnMessage(string id, object obj1, object obj2)
+	public void SendMessengerMsg(string name, object obj1 = null, object obj2 = null)
 	{
-		return false;
+		Messenger.SendMessageFrom(this.messengerName, name, obj1, obj2);
+	}
+
+	public virtual void OnMessage(string id, object obj1, object obj2)
+	{
 	}
 }
 
@@ -32,19 +36,6 @@ public static class Messenger
 		listeners.Add(newListener);
 	}
 
-	public static void SendMessage(string id, object obj1 = null, object obj2 = null)
-	{
-		Debug.Log("MessengerListener.SendMessage " + id + " listeners=" + listeners.Count );
-		for (int i=0; i<listeners.Count; i++)
-		{
-			bool consumed = listeners[i].OnMessage(id, obj1, obj2);
-			if (consumed)
-			{
-				break;
-			}
-		}
-	}
-
 	public static void SendMessageFrom(string from, string id, object obj1 = null, object obj2 = null)
 	{
 		Debug.Log("MessengerListener.SendMessageFrom " + from + "." + id + " listeners=" + listeners.Count );
@@ -56,12 +47,7 @@ public static class Messenger
 				continue;
 			}
 
-			bool consumed = listeners[i].OnMessage(id, obj1, obj2);
-			if (consumed)
-			{
-				Debug.Log("MessengerListener.SendMessageFrom consumed by " + listeners[i].messengerName);
-				break;
-			}
+			listeners[i].OnMessage(id, obj1, obj2);
 		}
 	}
 

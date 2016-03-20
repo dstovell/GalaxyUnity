@@ -3,12 +3,11 @@ using System.Collections;
 
 public class FadeScreen : GS.MessengerListener 
 {
-	//private float targetAlpha = 0.0f;
-	//private float fadeTime = 0.0f;
 	private float fadeDuration = 7.0f;
 	private UnityEngine.UI.Image image;
-	float fontSize = 0.05f;
-	bool intialFade = false;
+	private float fontSize = 0.05f;
+	private string text = string.Empty;
+	private bool intialFade = false;
 
 	// Use this for initialization
 	public void Start () 
@@ -17,6 +16,7 @@ public class FadeScreen : GS.MessengerListener
 
 		//this.gameObject.GetComponent<Image>
 		this.image = this.gameObject.GetComponent<UnityEngine.UI.Image>();
+		this.text = "connecting to the galaxy...";
 	}
 
 	public void OnGUI() 
@@ -33,11 +33,9 @@ public class FadeScreen : GS.MessengerListener
 
 		GUI.backgroundColor = Color.black;
 		GUIStyle style = new GUIStyle(GUI.skin.label);
-		//style.fontStyle = FontStyle.Bold;
 		style.richText = true;
 		style.fontSize = Mathf.FloorToInt(VectorShape.ScaleSize(fontSize));
-		style.wordWrap = true; 
-		//style.fontStyle
+		style.wordWrap = true;
 		float boarderSize = 6.0f;
 		float sizeX =  0.6f*Screen.width;
 		float sizeY =  0.6f*Screen.height;
@@ -48,13 +46,11 @@ public class FadeScreen : GS.MessengerListener
 		string colorHex = "#00ffffff";
 
 		GUILayout.BeginArea(buttonRect);
-		//GUILayout.Label("<color=cyan>" + this.text + "</color>", style);
-		GUILayout.Box("<color=" + colorHex + ">connecting to the galaxy...</color>", style);
+		GUILayout.Box("<color=" + colorHex + ">" + this.text + "</color>", style);
 		GUILayout.EndArea();
-		//GUI.Label(buttonRect, "<color=cyan>" + this.text + "</color>", style);
 	}
 
-	public override bool OnMessage(string id, object obj1, object obj2)
+	public override void OnMessage(string id, object obj1, object obj2)
 	{
 
 		switch(id)
@@ -66,7 +62,7 @@ public class FadeScreen : GS.MessengerListener
 					this.image.CrossFadeAlpha(0.0f, this.fadeDuration, true);
 				}
 				this.intialFade = true;
-				return false;
+				break;
 			}
 
 			case "fade_out":
@@ -75,13 +71,11 @@ public class FadeScreen : GS.MessengerListener
 				{
 					this.image.CrossFadeAlpha(1.0f, this.fadeDuration, true);
 				}
-				return false;
+				break;
 			}
 
 			default:break;
 		}
-
-		return false;
 	}
 
 }

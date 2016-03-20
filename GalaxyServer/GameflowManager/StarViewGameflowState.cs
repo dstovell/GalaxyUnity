@@ -7,15 +7,25 @@ namespace GS
 
 public class StarViewGameflowState : GameflowState
 {
+	private StarData starData = null;
+
 	public StarViewGameflowState() : base()
 	{
 	}
 
-	public override void OnBegin()
+	public override void OnBegin(GameflowStateType previousState, object obj1, object obj2)
 	{
+		StarData star = obj1 as StarData;
+		if (star != null)
+		{
+			this.starData = star;
+			this.manager.galaxyManager.GetStar(this.starData.id, delegate(string error) {
+				//Debug.Log("GetStar() error=" + error);
+			});
+		}
 	}
 
-	public override void OnEnd()
+	public override void OnEnd(GameflowStateType nextState, object obj1, object obj2)
 	{
 	}
 
@@ -27,9 +37,16 @@ public class StarViewGameflowState : GameflowState
 	{
 	}
 
-	public override bool OnMessage(string id, object obj1, object obj2)
+	public override void OnMessage(string id, object obj1, object obj2)
 	{
-		return false;
+		switch(id)
+		{
+			case "galaxyview_selected":
+			{
+				this.manager.SetState(GameflowStateType.GalaxyView, obj1);
+				break;
+			}
+		}
 	}
 }
 

@@ -36,8 +36,6 @@ public class StarComponent : MonoBehaviour
 	void OnMouseDown()
 	{
 		//ON SELECTED Message...
-
-		//GS.Messenger.SendMessage("star_selected", this, null);
 	}
 
 	void CreateModel()

@@ -294,13 +294,7 @@ public class RandomStarVectorItem : VectorItem
 				{
 					GS.StarData star = this.galaxyManager.galaxy.Stars[this.randomStarId];
 					GS.Messenger.SendMessageFrom("ui", "starview_selected", star);
-					this.text = "GALAXY VIEW";
 
-					GS.GameflowManager.Instance.SetState(GS.GameflowStateType.StarView);
-
-					this.galaxyManager.GetStar(star.id, delegate(string error) {
-						//Debug.Log("GetStar() error=" + error);
-					});
 					RootVectorItem root = this.parent as RootVectorItem;
 					if (root != null)
 					{
@@ -354,7 +348,6 @@ public class GalaxyViewVectorItem : VectorItem
 			{
 				root.Close();
 			}
-			GS.GameflowManager.Instance.SetState(GS.GameflowStateType.GalaxyView);
 		}
 	}
 }
@@ -448,28 +441,17 @@ public class VectorMenu : GS.MessengerListener
 		}
 	}
 
-	public override bool OnMessage(string id, object obj1, object obj2)
+	public override void OnMessage(string id, object obj1, object obj2)
 	{
 
 		switch(id)
 		{
-			case "galaxy_loaded":
-			{
-				Debug.Log("OnMessage galaxy_loaded");
-				Vector2 screenPoint = new Vector2(0.061f, 0.88f);
-				float size = 0.25f;
-				//this.rootMenu = new RootVectorItem(screenPoint, size);
-				break;
-			}
-
 			case "starview_reached":
 			{
-				//VectorLine.Destroy ( VectorLine.Destroy (
 				GS.StarData data = obj1 as GS.StarData;
 				Vector2 screenPoint = new Vector2(0.5f, 0.5f);
 				float size = data.Radius * 0.08f;
 				this.starMenu = new StarVectorItem(data.id, screenPoint, size);
-				//MoveToTarget(data.Position, this.maxZoom);
 				break;
 			}
 
@@ -486,7 +468,6 @@ public class VectorMenu : GS.MessengerListener
 
 			case "homebutton_clicked":
 			{
-				Debug.Log("homebutton_clicked open=" + this.rootMenu.IsOpen);
 				if (this.rootMenu != null)
 				{
 					if (this.rootMenu.IsOpen)
@@ -503,8 +484,6 @@ public class VectorMenu : GS.MessengerListener
 
 			default:break;
 		}
-
-		return false;
 	}
 
 }

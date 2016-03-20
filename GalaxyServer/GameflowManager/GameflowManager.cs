@@ -18,7 +18,7 @@ public enum GameflowStateType
 
 public class GameflowState 
 {
-	private bool isCurrentState = false;
+	//private bool isCurrentState = false;
 	
 	protected GameflowManager manager { get { return GameflowManager.Instance; } }
 
@@ -26,14 +26,12 @@ public class GameflowState
 	{
 	}
 
-	public virtual void OnBegin()
+	public virtual void OnBegin(GameflowStateType previousState, object obj1, object obj2)
 	{
-		this.isCurrentState = true;
 	}
 
-	public virtual void OnEnd()
+	public virtual void OnEnd(GameflowStateType nextState, object obj1, object obj2)
 	{
-		this.isCurrentState = false;
 	}
 
 	public virtual void OnUpdate() 
@@ -44,9 +42,8 @@ public class GameflowState
 	{
 	}
 
-	public virtual bool OnMessage(string id, object obj1, object obj2)
+	public virtual void OnMessage(string id, object obj1, object obj2)
 	{
-		return false;
 	}
 }
 
@@ -62,21 +59,23 @@ public class GameflowManager : MessengerListener
 
 	public GameflowState CurrentState { get { return (this.currentState != GameflowStateType.None) ? this.states[this.currentState] : null; } }
 
-	public void SetState(GameflowStateType stateId)
+	public void SetState(GameflowStateType stateId, object obj1 = null, object obj2 = null)
 	{
 		if (this.states.ContainsKey(stateId))
 		{
 			GameflowState newState = this.states[stateId];
 			if (newState != this.CurrentState)
 			{
+				Debug.Log("******GameflowManager Change State " + this.currentState.ToString() + " -> " + stateId.ToString());
 				if (this.CurrentState != null)
 				{
-					this.CurrentState.OnEnd();
+					this.CurrentState.OnEnd(stateId, obj1, obj2);
 				}
-
+				
+				GameflowStateType prevState = this.currentState;
 				this.currentState = stateId;
 
-				this.CurrentState.OnBegin();
+				this.CurrentState.OnBegin(prevState, obj1, obj2);
 			}
 		}
 	}
@@ -95,6 +94,8 @@ public class GameflowManager : MessengerListener
 		this.states[GameflowStateType.GalaxyView] = new GalaxyViewGameflowState();
 		this.states[GameflowStateType.StarView] = new StarViewGameflowState();
 		this.states[GameflowStateType.SolarSystemView] = new SolarSystemViewGameflowState();
+
+		InitMessenger("GameflowManager");
 	}
 
 	// Use this for initialization
@@ -119,24 +120,12 @@ public class GameflowManager : MessengerListener
 		}
 	}
 
-	public override bool OnMessage(string id, object obj1, object obj2)
+	public override void OnMessage(string id, object obj1, object obj2)
 	{
-
-		switch(id)
+		if (this.CurrentState != null)
 		{
-			case "galaxy_loaded":
-			{
-				Debug.Log("OnMessage galaxy_loaded");
-				Vector2 screenPoint = new Vector2(0.061f, 0.88f);
-				float size = 0.25f;
-				//this.rootMenu = new RootVectorItem(screenPoint, size);
-				return false;
-			}
-
-			default:break;
+			this.CurrentState.OnMessage(id, obj1, obj2);
 		}
-
-		return false;
 	}
 }
 

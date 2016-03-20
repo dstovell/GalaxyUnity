@@ -224,14 +224,12 @@ namespace GS
 			this.InitMessenger("galaxy");
 		}
 
-		public override bool OnMessage(string id, object obj1, object obj2)
+		public override void OnMessage(string id, object obj1, object obj2)
 		{
 			switch(id)
 			{
 				default:break;
 			}
-
-			return false;
 		}
 	}
 

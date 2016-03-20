@@ -89,14 +89,14 @@ public class GalaxyComponent : MessengerListener
 		{
 			if (this.targetZoom == this.maxZoom)
 			{
-				Messenger.SendMessageFrom(this.messengerName, "starview_reached", this.targetStar);
+				this.SendMessengerMsg("starview_reached", this.targetStar);
 			}
 			this.moving = false;
 			this.targetZoom = -1.0f;
 		}
 	}
 
-	public override bool OnMessage(string id, object obj1, object obj2)
+	public override void OnMessage(string id, object obj1, object obj2)
 	{
 
 		switch(id)
@@ -106,19 +106,17 @@ public class GalaxyComponent : MessengerListener
 				StarData data = obj1 as StarData;
 				this.targetStar = data;
 				MoveToTarget(data.Position, this.maxZoom);
-				return false;
+				break;
 			}
 
 			case "galaxyview_selected":
 			{
 				RestoreInital();
-				return false;
+				break;
 			}
 
 			default:break;
 		}
-
-		return false;
 	}
 }
 
