@@ -66,9 +66,22 @@ public class VectorItem
 		this.size = Mathf.Max(_size, this.minSize);
 	}
 
+	public void CloseChildren()
+	{
+		for(int i=0; i<this.children.Count; i++)
+		{
+			this.children[i].CloseAndDestroy();
+		}
+		this.children.Clear();
+	}
+
 	public void CloseAndDestroy()
 	{
-		this.shape.state = VectorShape.State.Outro;
+		CloseChildren();
+		if (this.shape != null)
+		{
+			this.shape.state = VectorShape.State.Outro;
+		}
 	}
 
 	public void Destroy()
@@ -141,20 +154,20 @@ public class VectorItem
 		}
 	}
 
-	public void OnGUIUpdate() 
+	public void OnGUIUpdate(VectorMenu menuManager) 
 	{
 		if ((this.shape == null) || (this.shape.state == VectorShape.State.Ready))
 		{
-			this.OnGUI();
+			this.OnGUI(menuManager);
 
 			for (int i=0; i<this.children.Count; i++)
 			{
-				this.children[i].OnGUIUpdate();
+				this.children[i].OnGUIUpdate(menuManager);
 			}
 		}
 	}
 
-	protected virtual void OnGUI() 
+	protected virtual void OnGUI(VectorMenu menuManager) 
 	{
 	}
 }
@@ -164,14 +177,14 @@ public class InfoVectorItem : VectorItem
 	private GS.Galaxy galaxy;
 	private GS.StarData data;
 
-	public InfoVectorItem(string text, Vector2 _position, float _size, GS.StarData _data) 
-	: base(text, VectorItem.Type.Square, null, _position, _size)
+	public InfoVectorItem(VectorItem _parent, string text, Vector2 _position, float _size, GS.StarData _data) 
+	: base(text, VectorItem.Type.Square, _parent, _position, _size)
 	{
 		this.galaxy = GS.GameflowManager.Instance.galaxyManager.galaxy;
 		this.data = _data;
 	}
 
-	protected override void OnGUI() 
+	protected override void OnGUI(VectorMenu menuManager) 
 	{
 		GUI.backgroundColor = Color.black;
 		GUIStyle style = new GUIStyle(GUI.skin.label);
@@ -229,28 +242,193 @@ public class StarVectorItem : VectorItem
 
 		float size = 0.50f;
 		Vector2 childPosition = this.GetChildPosition(size, 1);
-		VectorItem child = new InfoVectorItem(infoText, childPosition, size, this.star);
+		VectorItem child = new InfoVectorItem(this, infoText, childPosition, size, this.star);
 		this.AddChild(child);
 	}
 
-	protected override void OnGUI() 
+	protected override void OnGUI(VectorMenu menuManager) 
 	{
 		
 	}
 }
 
-public class RandomStarVectorItem : VectorItem
+public class StarViewVectorItem : VectorItem
 {
-	private int randomStarId;
+	private int starId;
 	private bool showingStar;
 	private GS.GalaxyManager galaxyManager;
 
-	public RandomStarVectorItem(VectorItem _parent, Vector2 _position, float _size) 
+	public StarViewVectorItem(VectorItem _parent, Vector2 _position, float _size, int _starId) 
 	: base("", VectorItem.Type.Square, _parent, _position, _size)
 	{
 		this.galaxyManager = GS.GameflowManager.Instance.galaxyManager;
-		NewRandomStar();
 		this.showingStar = false;
+		this.starId = _starId;
+		this.text = "Star " + this.starId;
+	}
+
+	protected override void OnGUI(VectorMenu menuManager) 
+	{
+		GUIStyle style = new GUIStyle(GUI.skin.button);
+		style.fontStyle = FontStyle.Bold;
+		style.richText = true;
+		style.fontSize = Mathf.FloorToInt(VectorShape.ScaleSize(0.03f));
+		style.wordWrap = true;
+		//style.fontStyle
+		float boarderSize = 2.0f;
+		float sizeX =  (shape.points[0].x - shape.points[2].x - 2.0f*boarderSize);
+		float sizeY =  (shape.points[0].y - shape.points[2].y - 2.0f*boarderSize);
+		float x = shape.points[2].x + boarderSize;
+		float y = ((Screen.height - shape.points[2].y)+boarderSize-sizeY- 2.0f*boarderSize);
+		Rect buttonRect = new Rect(x, y, sizeX, sizeY);
+
+		if (GUI.Button(buttonRect, menuManager.starIcon, style))
+		{
+			if (this.galaxyManager.galaxy.Stars.ContainsKey(this.starId))
+			{
+				GS.StarData star = this.galaxyManager.galaxy.Stars[this.starId];
+				GS.Messenger.SendMessageFrom("ui", "starview_selected", star);
+
+				if (this.parent != null)
+				{
+					this.parent.CloseChildren();
+				}
+			}
+		}
+	}
+}
+
+public class GalaxyViewVectorItem : VectorItem
+{
+	public GalaxyViewVectorItem(VectorItem _parent, Vector2 _position, float _size) 
+	: base("Galaxy View", VectorItem.Type.Square, _parent, _position, _size)
+	{
+	}
+
+	protected override void OnGUI(VectorMenu menuManager) 
+	{
+		GUIStyle style = new GUIStyle(GUI.skin.button);
+		style.fontStyle = FontStyle.Bold;
+		style.richText = true;
+		style.fontSize = Mathf.FloorToInt(VectorShape.ScaleSize(0.03f));
+		style.wordWrap = true;
+		//style.fontStyle
+		float boarderSize = 2.0f;
+		float sizeX =  (shape.points[0].x - shape.points[2].x - 2.0f*boarderSize);
+		float sizeY =  (shape.points[0].y - shape.points[2].y - 2.0f*boarderSize);
+		float x = shape.points[2].x + boarderSize;
+		float y = ((Screen.height - shape.points[2].y)+boarderSize-sizeY- 2.0f*boarderSize);
+		Rect buttonRect = new Rect(x, y, sizeX, sizeY);
+		if (GUI.Button(buttonRect, menuManager.galaxyIcon, style))
+		{
+			GS.Messenger.SendMessageFrom("ui", "galaxyview_selected");
+			if (this.parent != null)
+			{
+				this.parent.CloseChildren();
+			}
+		}
+	}
+}
+
+public class SolarSystemViewVectorItem : VectorItem
+{
+	private int starId = 0;
+
+	private GS.GalaxyManager galaxyManager;
+
+	public SolarSystemViewVectorItem(VectorItem _parent, Vector2 _position, float _size, int _starId) 
+	: base("View System", VectorItem.Type.Square, _parent, _position, _size)
+	{
+		this.starId = _starId;
+		this.galaxyManager = GS.GameflowManager.Instance.galaxyManager;
+	}
+
+	protected override void OnGUI(VectorMenu menuManager) 
+	{
+		GUIStyle style = new GUIStyle(GUI.skin.button);
+		style.fontStyle = FontStyle.Bold;
+		style.richText = true;
+		style.fontSize = Mathf.FloorToInt(VectorShape.ScaleSize(0.03f));
+		style.wordWrap = true;
+		//style.fontStyle
+		float boarderSize = 2.0f;
+		float sizeX =  (shape.points[0].x - shape.points[2].x - 2.0f*boarderSize);
+		float sizeY =  (shape.points[0].y - shape.points[2].y - 2.0f*boarderSize);
+		float x = shape.points[2].x + boarderSize;
+		float y = ((Screen.height - shape.points[2].y)+boarderSize-sizeY- 2.0f*boarderSize);
+		Rect buttonRect = new Rect(x, y, sizeX, sizeY);
+		//if (GUI.Button(buttonRect, "<color=cyan>" + this.text + "</color>", style))
+		if (GUI.Button(buttonRect, menuManager.solarSystemIcon, style))
+		{
+			GS.StarData star = this.galaxyManager.galaxy.Stars[this.starId];
+			GS.Messenger.SendMessageFrom("ui", "solarsystemview_selected", star);
+			if (this.parent != null)
+			{
+				this.parent.CloseChildren();
+			}
+		}
+	}
+}
+
+public class RootVectorItem : VectorItem
+{
+	public bool IsOpen { get { return (this.children.Count > 0); } }
+
+	private float childSize = 0.18f;
+
+	private int randomStarId = 0;
+
+	private GS.GalaxyManager galaxyManager;
+
+	public RootVectorItem(Vector2 _position, float _size) 
+	: base(_position, _size)
+	{
+		this.maxChildren = 8;
+		this.galaxyManager = GS.GameflowManager.Instance.galaxyManager;
+	}
+
+	private void AddStarItem(int pos)
+	{
+		Vector2 childPosition = this.GetChildPosition(this.childSize, pos);
+		VectorItem child = new StarViewVectorItem(this, childPosition, this.childSize, this.randomStarId);
+		this.AddChild(child);
+	}
+
+	private void AddGalaxyViewItem(int pos)
+	{
+		Vector2 childPosition = this.GetChildPosition(this.childSize, pos);
+		VectorItem child = new GalaxyViewVectorItem(this, childPosition, this.childSize);
+		this.AddChild(child);
+	}
+
+	private void AddSolarSystemViewItem(int pos, int starId)
+	{
+		Vector2 childPosition = this.GetChildPosition(this.childSize, pos);
+		VectorItem child = new SolarSystemViewVectorItem(this, childPosition, this.childSize, starId);
+		this.AddChild(child);
+	}
+
+
+	public void Open()
+	{
+		Debug.Log("Open=" + this.IsOpen);
+		if (!this.IsOpen)
+		{
+			if (GS.GameflowManager.Instance.IsState(GS.GameflowStateType.GalaxyView))
+			{
+				NewRandomStar();
+				AddStarItem(0);
+			}
+			else if (GS.GameflowManager.Instance.IsState(GS.GameflowStateType.StarView))
+			{
+				AddSolarSystemViewItem(0, this.randomStarId);
+				AddGalaxyViewItem(2);
+			}
+			else if (GS.GameflowManager.Instance.IsState(GS.GameflowStateType.SolarSystemView))
+			{
+				AddStarItem(0);
+			}
+		}
 	}
 
 	private void NewRandomStar()
@@ -265,122 +443,15 @@ public class RandomStarVectorItem : VectorItem
 		}
 		//this.randomStarId = 2015;
 		//this.randomStarId = 2004;
-
-		this.text = "Star " + this.randomStarId;
-		this.originalText = this.text;
-	}
-
-	protected override void OnGUI() 
-	{
-		GUIStyle style = new GUIStyle(GUI.skin.button);
-		style.fontStyle = FontStyle.Bold;
-		style.richText = true;
-		style.fontSize = Mathf.FloorToInt(VectorShape.ScaleSize(0.03f));
-		style.wordWrap = true;
-		//style.fontStyle
-		float boarderSize = 2.0f;
-		float sizeX =  (shape.points[0].x - shape.points[2].x - 2.0f*boarderSize);
-		float sizeY =  (shape.points[0].y - shape.points[2].y - 2.0f*boarderSize);
-		float x = shape.points[2].x + boarderSize;
-		float y = ((Screen.height - shape.points[2].y)+boarderSize-sizeY- 2.0f*boarderSize);
-		Rect buttonRect = new Rect(x, y, sizeX, sizeY);
-
-		if (GUI.Button(buttonRect, "<color=cyan>" + this.text + "</color>", style))
-		{
-			//GS.StarData star = GS.GameflowManager.Instance.galaxyManager.galaxy.Stars[2015];
-
-			if (this.galaxyManager.galaxy.Stars.ContainsKey(this.randomStarId))
-			{
-				GS.StarData star = this.galaxyManager.galaxy.Stars[this.randomStarId];
-				GS.Messenger.SendMessageFrom("ui", "starview_selected", star);
-
-				RootVectorItem root = this.parent as RootVectorItem;
-				if (root != null)
-				{
-					root.Close();
-				}
-			}
-		}
-	}
-}
-
-public class GalaxyViewVectorItem : VectorItem
-{
-	public GalaxyViewVectorItem(VectorItem _parent, Vector2 _position, float _size) 
-	: base("Galaxy View", VectorItem.Type.Square, _parent, _position, _size)
-	{
-	}
-
-	protected override void OnGUI() 
-	{
-		GUIStyle style = new GUIStyle(GUI.skin.button);
-		style.fontStyle = FontStyle.Bold;
-		style.richText = true;
-		style.fontSize = Mathf.FloorToInt(VectorShape.ScaleSize(0.03f));
-		style.wordWrap = true;
-		//style.fontStyle
-		float boarderSize = 2.0f;
-		float sizeX =  (shape.points[0].x - shape.points[2].x - 2.0f*boarderSize);
-		float sizeY =  (shape.points[0].y - shape.points[2].y - 2.0f*boarderSize);
-		float x = shape.points[2].x + boarderSize;
-		float y = ((Screen.height - shape.points[2].y)+boarderSize-sizeY- 2.0f*boarderSize);
-		Rect buttonRect = new Rect(x, y, sizeX, sizeY);
-		if (GUI.Button(buttonRect, "<color=cyan>" + this.text + "</color>", style))
-		{
-			GS.Messenger.SendMessageFrom("ui", "galaxyview_selected");
-			RootVectorItem root = this.parent as RootVectorItem;
-			if (root != null)
-			{
-				root.Close();
-			}
-		}
-	}
-}
-
-public class RootVectorItem : VectorItem
-{
-	public bool IsOpen { get { return (this.children.Count > 0); } }
-
-	public RootVectorItem(Vector2 _position, float _size) 
-	: base(_position, _size)
-	{
-		this.maxChildren = 8;
-	}
-
-	public void Open()
-	{
-		Debug.Log("Open=" + this.IsOpen);
-		if (!this.IsOpen)
-		{
-			float size = 0.18f;
-			Vector2 childPosition = this.GetChildPosition(size, 0);
-			VectorItem child = new RandomStarVectorItem(this, childPosition, size);
-			this.AddChild(child);
-
-			Vector2 childPosition2 = this.GetChildPosition(size, 1);
-			VectorItem child2 = new GalaxyViewVectorItem(this, childPosition2, size);
-			this.AddChild(child2);
-
-			Debug.Log("this.position=" + this.position.x + "," + this.position.y);
-			Debug.Log("childPosition=" + childPosition.x + "," + childPosition.y);
-		}
-	}
-
-	public void Close()
-	{
-		if (this.IsOpen)
-		{
-			for(int i=0; i<this.children.Count; i++)
-			{
-				this.children[i].CloseAndDestroy();
-			}
-			this.children.Clear();
-		}
 	}
 }
 
 public class VectorMenu : GS.MessengerListener 
 {
+	public Texture solarSystemIcon;
+	public Texture starIcon;
+	public Texture galaxyIcon;
+
 	private RootVectorItem rootMenu = null;
 	private VectorItem starMenu = null;
 
@@ -418,11 +489,11 @@ public class VectorMenu : GS.MessengerListener
 	{
 		if (this.rootMenu != null)
 		{
-			this.rootMenu.OnGUIUpdate();
+			this.rootMenu.OnGUIUpdate(this);
 		}
 		if (this.starMenu != null)
 		{
-			starMenu.OnGUIUpdate();
+			starMenu.OnGUIUpdate(this);
 		}
 	}
 
@@ -442,6 +513,7 @@ public class VectorMenu : GS.MessengerListener
 
 			case "galaxyview_selected":
 			case "starview_selected":
+			case "solarsystemview_selected":
 			{
 				if (this.starMenu != null)
 				{
@@ -457,7 +529,7 @@ public class VectorMenu : GS.MessengerListener
 				{
 					if (this.rootMenu.IsOpen)
 					{
-						this.rootMenu.Close();
+						this.rootMenu.CloseChildren();
 					}
 					else 
 					{

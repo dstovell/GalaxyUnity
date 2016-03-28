@@ -47,6 +47,12 @@ public class StarViewGameflowState : GameflowState
 				this.manager.SetState(GameflowStateType.GalaxyView, obj1);
 				break;
 			}
+
+			case "solarsystemview_selected":
+			{
+				this.manager.SetState(GameflowStateType.SolarSystemView, obj1);
+				break;
+			}
 			
 			case "starview_selected":
 			{

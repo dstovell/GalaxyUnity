@@ -43,7 +43,7 @@ public static class Messenger
 		{
 			if (listeners[i].messengerName == from)
 			{
-				Debug.Log("MessengerListener.SendMessageFrom skipping " + from);
+				//Debug.Log("MessengerListener.SendMessageFrom skipping " + from);
 				continue;
 			}
 

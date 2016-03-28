@@ -55,7 +55,7 @@ public class GameflowManager : MessengerListener
 	public GalaxyManager galaxyManager = null;
 
 	private Dictionary<GameflowStateType, GameflowState> states;
-	private GameflowStateType currentState = GameflowStateType.None;
+	public GameflowStateType currentState = GameflowStateType.None;
 	private GameflowState CurrentState { get { return (this.currentState != GameflowStateType.None) ? this.states[this.currentState] : null; } }
 
 	public bool IsState(GameflowStateType state) { return (this.currentState == state); }

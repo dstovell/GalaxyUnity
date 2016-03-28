@@ -16,7 +16,8 @@ public class GalaxyComponent : MessengerListener
 	private Vector3 targetLookAtPosition;
 	private Vector3 previousPosition;
 	private Vector3 previousLookAtPosition;
-	private float maxZoom = 20.0f;
+	private float starviewZoom = 20.0f;
+	private float solarsystemviewZoom = 10000.0f;
 	private float targetZoom = -1.0f;
 	private float previousZoom = 0.5f;
 	private float moveTime = 0.0f;
@@ -79,15 +80,18 @@ public class GalaxyComponent : MessengerListener
 			float zoom = Mathf.Lerp(this.previousZoom, this.targetZoom, tValue);
 			galaxyZoomer.transform.localScale = new Vector3(zoom, zoom, zoom);
 
-			float rotationAngle = Mathf.Lerp(this.fullZoomCameraVertical, this.fullZoomCameraVertical-40.0f, (this.maxZoom - zoom)/(this.maxZoom/this.fullZoom));
-			this.orbitCam.SetRotationVertical(rotationAngle);
+			if (zoom <= this.starviewZoom)
+			{
+				float rotationAngle = Mathf.Lerp(this.fullZoomCameraVertical, this.fullZoomCameraVertical-40.0f, (this.starviewZoom - zoom)/(this.starviewZoom/this.fullZoom));
+				this.orbitCam.SetRotationVertical(rotationAngle);
+			}
 		}
 
 		this.moveTime += Time.deltaTime;
 
 		if (t >= 1.0f)
 		{
-			if (this.targetZoom == this.maxZoom)
+			if (this.targetZoom == this.starviewZoom)
 			{
 				this.SendMessengerMsg("starview_reached", this.targetStar);
 			}
@@ -105,7 +109,15 @@ public class GalaxyComponent : MessengerListener
 			{
 				StarData data = obj1 as StarData;
 				this.targetStar = data;
-				MoveToTarget(data.Position, this.maxZoom);
+				MoveToTarget(data.Position, this.starviewZoom);
+				break;
+			}
+
+			case "solarsystemview_onbegin":
+			{
+				StarData data = obj1 as StarData;
+				this.targetStar = data;
+				MoveToTarget(data.Position, this.solarsystemviewZoom);
 				break;
 			}
 
